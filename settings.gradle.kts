@@ -16,4 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-include(":app")
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    maven { url = uri("https://repo.spring.io/milestone") }
+  }
+}
+
+include(":app", ":backend", ":common")

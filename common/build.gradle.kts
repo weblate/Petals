@@ -16,15 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-buildscript {
-  repositories {
-    mavenCentral()
-    google()
-    maven { url = uri("https://repo.spring.io/milestone") }
+plugins {
+  kotlin("multiplatform")
+  id("com.android.library")
+}
+
+repositories {
+  mavenCentral()
+  google()
+}
+
+kotlin {
+  android()
+  jvm()
+
+  sourceSets {
+    getByName("commonMain") {
+      dependencies {
+        api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+      }
+    }
   }
-  dependencies {
-    classpath("com.android.tools.build:gradle:7.0.4")
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
-    classpath("org.jetbrains.kotlin:kotlin-serialization:1.6.10")
-  }
+}
+
+android {
+  compileSdk = 31
 }

@@ -15,16 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package br.com.colman.petals
 
-buildscript {
-  repositories {
-    mavenCentral()
-    google()
-    maven { url = uri("https://repo.spring.io/milestone") }
-  }
-  dependencies {
-    classpath("com.android.tools.build:gradle:7.0.4")
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
-    classpath("org.jetbrains.kotlin:kotlin-serialization:1.6.10")
-  }
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
+
+@SpringBootApplication
+class Petals
+
+fun main() {
+  runApplication<Petals>()
 }
