@@ -16,19 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-buildscript {
-  repositories {
-    mavenCentral()
-    google()
-    maven { url = uri("https://repo.spring.io/milestone") }
-  }
-  dependencies {
-    classpath("com.android.tools.build:gradle:7.0.4")
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
-    classpath("org.jetbrains.kotlin:kotlin-serialization:1.6.10")
-  }
-}
+package br.com.colman.petals.hittimer
 
-allprojects {
-  apply(plugin = "kotlinx-serialization")
+import io.konform.validation.Validation
+import io.konform.validation.jsonschema.minimum
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class CreateEntryRequest(
+  @SerialName("breathhold_seconds") val breathholdSeconds: Int,
+  @SerialName("high_score") val highScore: Int
+)
+
+val validateEntry = Validation<CreateEntryRequest> {
+  CreateEntryRequest::breathholdSeconds {
+    minimum(0)
+  }
+
+  CreateEntryRequest::highScore {
+    minimum(0)
+  }
 }

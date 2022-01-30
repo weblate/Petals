@@ -19,13 +19,16 @@
 package br.com.colman.petals.hittimer
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.file.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.*
+import io.kotest.property.forAll
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType.APPLICATION_JSON
-import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import java.io.File
@@ -38,16 +41,23 @@ class HitTimerResearchControllerTest(
 ) : FunSpec({
 
   test("Returns 201 when creating a new hit entry") {
-    val response = mockMvc.makePost(5, 1)
+    val response = mockMvc.makePost(NewEntryPost(breathhold = 5, highScore = 1))
 
     response.status shouldBe 201
   }
 
   test("Appends the new entry to the file") {
-    mockMvc.makePost(10, 20)
+    mockMvc.makePost(NewEntryPost(breathhold = 10, highScore = 20))
 
     val file = File(dbFile)
     file.readText() shouldContain "10,20\n"
+  }
+
+  test("Rejects invalid values") {
+    postRequestArb.forAll {
+      mockMvc.makePost(it).status == 400
+    }
+    File(dbFile).shouldBeEmpty()
   }
 
   beforeTest {
@@ -55,18 +65,44 @@ class HitTimerResearchControllerTest(
       if (exists()) delete()
     }
   }
-
 })
 
-private fun MockMvc.makePost(breathhold: Int, highScore: Int): MockHttpServletResponse {
-  return perform(
-    post("/research/hit").content(
-      """
-      {
-      "breathhold_seconds": $breathhold,
-      "high_score": $highScore
-      }
-    """.trimIndent()
-    ).contentType(APPLICATION_JSON)
-  ).andReturn().response
+private val postRequestArb = arbitrary {
+  NewEntryPost(
+    Arb.int().orNull().next(),
+    Arb.boolean().next(),
+    Arb.int().orNull().next(),
+    Arb.boolean().next(),
+    )
+}.filter {
+  val hold = it.breathhold ?: -1
+  val score = it.highScore ?: -1
+
+  hold < 0 && score < 0
 }
+
+private data class NewEntryPost(
+  val breathhold: Int?,
+  val serializeNullBreathhold: Boolean = false,
+  val highScore: Int?,
+  val serializeNullHighScore: Boolean = false,
+) {
+  val serializeBreathhold = breathhold != null || serializeNullBreathhold
+  val serializeHighscore = highScore != null  || serializeNullHighScore
+
+  fun toJson() = buildString {
+    append("{")
+    if(serializeBreathhold) {
+      append("\"breathhold_seconds\": $breathhold")
+      if(serializeHighscore) { append(",") }
+    }
+    if(serializeHighscore) {
+      append("\"high_score\": $highScore")
+    }
+    append("}")
+  }
+}
+
+private fun MockMvc.makePost(request: NewEntryPost) = perform(
+  post("/research/hit").content(request.toJson()).contentType(APPLICATION_JSON)
+).andReturn().response

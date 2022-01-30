@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
 plugins {
   kotlin("multiplatform")
   id("com.android.library")
@@ -34,6 +35,7 @@ kotlin {
     getByName("commonMain") {
       dependencies {
         api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+        api("io.konform:konform:0.3.0")
       }
     }
   }

@@ -18,7 +18,6 @@
 
 package br.com.colman.petals.hittimer
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -31,17 +30,17 @@ import org.springframework.web.bind.annotation.RestController
 class HitTimerResearchController(
   private val repository: HitTimerResearchRepository
 ) {
-  // Fixme Validate request
+
   @PostMapping
-  fun create(@RequestBody request: CreateEntryRequest): ResponseEntity<Unit> {
-    repository.append(request.toEntry())
-    return ResponseEntity.status(CREATED).build()
+  fun create(@RequestBody request: CreateEntryRequest): ResponseEntity<Any> {
+    val validationResult = validateEntry(request)
+    if(validationResult.errors.isEmpty()) {
+      repository.append(request.toEntry())
+      return ResponseEntity.status(CREATED).build()
+    } else {
+      return ResponseEntity.badRequest().body(validationResult.errors)
+    }
   }
 }
 
-data class CreateEntryRequest(
-  @JsonProperty("breathhold_seconds") val breathholdSeconds: Int,
-  @JsonProperty("high_score") val highScore: Int
-) {
-  fun toEntry() = HitTimerResearchEntry(breathholdSeconds, highScore)
-}
+private fun CreateEntryRequest.toEntry() = HitTimerResearchEntry(breathholdSeconds, highScore)
