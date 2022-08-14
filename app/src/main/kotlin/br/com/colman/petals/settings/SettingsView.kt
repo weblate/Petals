@@ -27,11 +27,17 @@ import br.com.colman.petals.R.string.ok
 import br.com.colman.petals.R.string.what_icon_should_be_used_for_currency
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Cash
+import kotlinx.coroutines.flow.Flow
+
+private typealias StringFlowProperty = Property<Flow<String>, String>
 
 @Composable
-fun SettingsView(settingsRepository: SettingsRepository) {
-  val currentCurrency by settingsRepository.currencyIcon.get().collectAsState("$")
-  val setCurrency = settingsRepository.currencyIcon::set
+fun SettingsView(
+  currencyProperty: StringFlowProperty
+) {
+  val (currency, setCurrency) = currencyProperty
+  val currentCurrency by currency.collectAsState("$")
+
 
   Column {
     CurrencyListItem(currentCurrency, setCurrency)

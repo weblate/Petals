@@ -46,6 +46,7 @@ import br.com.colman.petals.navigation.Page.Usage
 import br.com.colman.petals.settings.SettingsView
 import br.com.colman.petals.statistics.StatisticsPage
 import org.koin.androidx.compose.get
+import org.koin.core.qualifier.named
 
 enum class Page(
   @StringRes val nameRes: Int,
@@ -70,7 +71,7 @@ fun NavHostContainer(navController: NavHostController) {
     }
 
     composable("settings") {
-      SettingsView(get())
+      SettingsView(get(named("currencyIcon")))
     }
   }
 }
