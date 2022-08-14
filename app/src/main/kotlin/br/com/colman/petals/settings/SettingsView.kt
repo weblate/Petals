@@ -30,8 +30,8 @@ import compose.icons.tablericons.Cash
 
 @Composable
 fun SettingsView(settingsRepository: SettingsRepository) {
-  val currentCurrency by settingsRepository.currencyIcon.collectAsState("$")
-  val setCurrency = settingsRepository::setCurrencyIcon
+  val currentCurrency by settingsRepository.currencyIcon.get().collectAsState("$")
+  val setCurrency = settingsRepository.currencyIcon::set
 
   Column {
     CurrencyListItem(currentCurrency, setCurrency)

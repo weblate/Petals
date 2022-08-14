@@ -105,7 +105,7 @@ private fun AverageList(uses: List<Use>, period: LocalDateRange) {
 @Composable
 private fun AverageListItem(label: String, grams: BigDecimal, cost: BigDecimal) {
   val settingsRepository = get<SettingsRepository>()
-  val currencyIcon by settingsRepository.currencyIcon.collectAsState("$")
+  val currencyIcon by settingsRepository.currencyIcon.get().collectAsState("$")
 
   Row {
     Text(stringResource(average_per, label), Modifier.weight(0.5f))

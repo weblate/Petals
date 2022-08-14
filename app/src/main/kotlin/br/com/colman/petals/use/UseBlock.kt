@@ -107,7 +107,7 @@ private fun UseBlock(
   totalValue: String = "54.321"
 ) {
   val settingsRepository = get<SettingsRepository>()
-  val currencyIcon by settingsRepository.currencyIcon.collectAsState("$")
+  val currencyIcon by settingsRepository.currencyIcon.get().collectAsState("$")
 
   Card(
     Modifier

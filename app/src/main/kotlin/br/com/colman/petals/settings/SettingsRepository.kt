@@ -4,33 +4,39 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+
+interface Property<T, Y> {
+  fun get(): T
+  operator fun component1() = get()
+
+  fun set(value: Y)
+  operator fun component2() = ::set
+}
+
+class SharedProperty(
+  val datastore: DataStore<Preferences>,
+  val key: Preferences.Key<String>,
+  val defaultValue: String
+) : Property<Flow<String>, String> {
+
+  override fun get(): Flow<String> = datastore.data.map { it[key] ?: defaultValue }
+
+  override fun set(value: String) {
+    runBlocking { datastore.edit { it[key] = value } }
+  }
+}
 
 class SettingsRepository(
   private val datastore: DataStore<Preferences>
 ) {
 
-  val currencyIcon = datastore.data.map { it[CurrencyIcon] ?: "$" }
-  val dateFormat = datastore.data.map { it[DateFormat] ?: "yyyy-MM-dd" }
-  val timeFormat = datastore.data.map { it[TimeFormat] ?: "HH:mm" }
-  val dateTimeFormat = datastore.data.map { it[DateTimeFormat] ?: "yyyy-MM-dd HH:mm" }
-
-  fun setCurrencyIcon(value: String): Unit = runBlocking {
-    datastore.edit { it[CurrencyIcon] = value }
-  }
-
-  fun setDateFormat(value: String): Unit = runBlocking {
-    datastore.edit { it[DateFormat] = value }
-  }
-
-  fun setTimeFormat(value: String): Unit = runBlocking {
-    datastore.edit { it[TimeFormat] = value }
-  }
-
-  fun setDateTimeFormat(value: String): Unit = runBlocking {
-    datastore.edit { it[DateTimeFormat] = value }
-  }
+  val currencyIcon = SharedProperty(datastore, CurrencyIcon, "$")
+  val dateFormat = SharedProperty(datastore, DateFormat, "yyyy-MM-dd")
+  val timeFormat = SharedProperty(datastore, TimeFormat, "HH:mm")
+  val dateTimeFormat = SharedProperty(datastore, DateTimeFormat, "yyyy-MM-dd HH:mm")
 
   companion object {
     val CurrencyIcon = stringPreferencesKey("currency_icon")

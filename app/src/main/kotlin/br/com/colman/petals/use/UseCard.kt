@@ -73,7 +73,7 @@ fun UseCard(use: Use = Use(), onEditUse: (Use) -> Unit = { }, onDeleteUse: (Use)
   val (date, amountGrams, costPerGram) = use
   val dateString = date.format(ofPattern("yyyy/MM/dd"))
   val timeString = date.format(ofPattern("HH:mm"))
-  val currencySymbol by get<SettingsRepository>().currencyIcon.collectAsState("$")
+  val currencySymbol by get<SettingsRepository>().currencyIcon.get().collectAsState("$")
 
   Card(
     Modifier
