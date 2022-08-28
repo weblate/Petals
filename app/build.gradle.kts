@@ -38,7 +38,7 @@ repositories {
 }
 
 android {
-  compileSdk = 31
+  compileSdk = 33
 
   defaultConfig {
     applicationId = "br.com.colman.petals"
@@ -139,7 +139,7 @@ dependencies {
   // AndroidX
   implementation(Libs.AndroidX.Compose.material)
   implementation(Libs.AndroidX.Compose.materialIcons)
-  compileOnly(Libs.AndroidX.Compose.tooling)
+  debugImplementation(Libs.AndroidX.Compose.tooling)
   androidTestImplementation(Libs.AndroidX.Compose.Test.uiTest)
   androidTestImplementation(Libs.AndroidX.Compose.Test.uiTestJunit4)
 
@@ -147,6 +147,8 @@ dependencies {
   implementation(Libs.AndroidX.navigationCompose)
   implementation(Libs.AndroidX.DataStore.android)
   implementation(Libs.AndroidX.DataStore.core)
+
+  implementation(Libs.Orchestra.spinner)
 
   androidTestImplementation(Libs.AndroidX.Test.rules)
   androidTestImplementation(Libs.AndroidX.Test.runner)

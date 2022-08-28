@@ -121,6 +121,10 @@ object Libs {
       val compose = "io.insert-koin:koin-androidx-compose:$version"
    }
 
+   object Orchestra {
+      val spinner = "com.github.skydoves:orchestra-spinner:1.1.5"
+   }
+
    object JUnit {
       val version = "4.13"
       val junit4 = "junit:junit:$version"

@@ -8,12 +8,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
+class PreviewProperty<T, Y>(val t: T): Property<T, Y> {
+  override fun get(): T = t
+  override fun set(value: Y) = error("Not Implemented")
+}
+
 interface Property<T, Y> {
   fun get(): T
   operator fun component1() = get()
 
   fun set(value: Y)
-  operator fun component2() = ::set
+  operator fun component2(): (Y) -> Unit = ::set
 }
 
 class SharedProperty(

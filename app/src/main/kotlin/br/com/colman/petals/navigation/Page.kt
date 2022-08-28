@@ -71,7 +71,12 @@ fun NavHostContainer(navController: NavHostController) {
     }
 
     composable("settings") {
-      SettingsView(get(named("currencyIcon")))
+      SettingsView(
+        get(named("currencyIcon")),
+        get(named("timeFormat")),
+        get(named("dateFormat")),
+        get(named("dateTimeFormat")),
+      )
     }
   }
 }
