@@ -22,7 +22,7 @@ import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
 import br.com.colman.petals.hittimer.HitTimerRepository
 import br.com.colman.petals.settings.SettingsRepository
-import br.com.colman.petals.use.repository.MyObjectBox
+import br.com.colman.petals.use.MyObjectBox
 import br.com.colman.petals.use.repository.UseRepository
 import br.com.colman.petals.withdrawal.discomfort.repository.DiscomfortRepository
 import br.com.colman.petals.withdrawal.discomfort.view.DiscomfortView

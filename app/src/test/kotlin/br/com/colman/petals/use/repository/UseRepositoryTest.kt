@@ -18,6 +18,7 @@
 
 package br.com.colman.petals.use.repository
 
+import br.com.colman.petals.ObjectBoxListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -29,8 +30,7 @@ import java.math.BigDecimal
 
 class UseRepositoryTest : FunSpec({
 
-  val box = MyObjectBox.builder().build().boxFor<Use>()
-  beforeEach { box.removeAll() }
+  val box = listener(ObjectBoxListener()).store.boxFor<Use>()
 
   val target = UseRepository(box)
 
